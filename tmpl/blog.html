@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мой блог</title>
+
+</head>
+<body>
+<div class="container">
+  <div class="header"><h1>Мой блог</h1></div>
+
+  <div class="posts-container">
+    {{range .Posts}}
+    <div class="post">
+      <div class="post-content">
+        <h2><a href="/post/{{.ID}}" style="color:#bbdefb">{{.Title}}</a></h2>
+        <small>{{.Date.Format "02.01.2006 15:04"}}</small>
+        <p>{{slice .Text 0 150}}…</p>
+      </div>
+      <div class="post-image">
+        {{if .Images}}
+          <img src="{{index .Images 0}}" alt="{{.Title}}">
+        {{else}}
+          <div class="no-image">Нет изображения</div>
+        {{end}}
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  <div class="pag">
+  {{if gt .Page 1}}<a href="?page={{minus .Page 1}}">← Назад</a>{{end}}
+  <span>{{.Page}} / {{.Last}}</span>
+  {{if lt .Page .Last}}<a href="?page={{plus .Page 1}}">Вперёд →</a>{{end}}
+  </div>
+
+</div>
+</body>
+</html>

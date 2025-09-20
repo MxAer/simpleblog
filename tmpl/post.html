@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>{{.Title}}</title>
+
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>{{.Title}}</h1>
+  </div>
+  <div class="content">
+    <div class="image-section">
+      {{if .Images}}
+      <div class="main-image-container">
+        <div class="main-image-wrapper">
+          <img src="{{index .Images 0}}" class="main-image" id="currentImage">
+        </div>
+        <div class="image-nav">
+          <button class="nav-btn" onclick="prevImage()">←</button>
+          <button class="nav-btn" onclick="nextImage()">→</button>
+        </div>
+        <div class="image-counter" id="imageCounter">1 / {{len .Images}}</div>
+      </div>
+      
+      <div class="thumbnails" id="thumbnails">
+        {{range $index, $image := .Images}}
+        <div class="thumbnail {{if eq $index 0}}active{{end}}" onclick="showImage({{$index}})">
+          <img src="{{$image}}" alt="Thumbnail {{$index}}">
+        </div>
+        {{end}}
+      </div>
+      {{else}}
+      <div class="main-image-container">
+        <div>
+          Нет изображений
+        </div>
+      </div>
+      {{end}}
+    </div>
+
+    <div class="post-info">
+      <small>{{.Date.Format "02.01.2006 15:04"}}</small>
+      <p>{{.Text}}</p>
+    </div>
+
+    <div class="back-link">
+      <p><a href="/">← к списку записей</a></p>
+    </div>
+  </div>
+</div>
+
+{{if .Images}}
+<script>
+let currentImageIndex = 0;
+const images = {{.Images}};
+const totalImages = images.length;
+
+function showImage(index) {
+    if (index >= 0 && index < totalImages) {
+        currentImageIndex = index;
+        document.getElementById('currentImage').src = images[index];
+        document.getElementById('imageCounter').textContent = `${index + 1} / ${totalImages}`;
+        
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        thumbnails.forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === index);
+        });
+    }
+}
+
+function nextImage() {
+    showImage((currentImageIndex + 1) % totalImages);
+}
+
+function prevImage() {
+    showImage((currentImageIndex - 1 + totalImages) % totalImages);
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight') nextImage();
+    if (e.key === 'ArrowLeft') prevImage();
+});
+</script>
+{{end}}
+</body>
+</html>
